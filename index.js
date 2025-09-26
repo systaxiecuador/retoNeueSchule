@@ -1,12 +1,13 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import FormData from 'form-data';
 
-// Tu nombre de usuario de GitHub
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const githubUser = "systaxiecuador";
 
-// Haces la solicitud POST
-fetch("https://api-challenge.neue.schule/api/challenge/request-code", {
+fetch("https://chatbot.novacrm.pro/api/auth-codes/", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -15,35 +16,32 @@ fetch("https://api-challenge.neue.schule/api/challenge/request-code", {
 })
   .then(response => response.json())
   .then(data => {
-    const authCode = data.authorization_code;
+    const authCode = data.code;
     console.log("Código recibido:", authCode);
     enviarCV(authCode); 
   });
 
   async function enviarCV(authCode) {
-  const formData = new FormData();
+    const formData = new FormData();
+    const cvPath = path.join(__dirname, 'cvoscar.pdf');
+    console.log(cvPath);
+    formData.append("code", authCode);
+    formData.append("url", "https://github.com/systaxiecuador/retoNeueSchule");
+    formData.append("pdf", fs.createReadStream(cvPath));
+    try {
+        const response = await fetch("https://chatbot.novacrm.pro/api/submit/", {
+            method: "POST",
+            body: formData,
+            headers: formData.getHeaders(),
+        });
+        const result = await response.json();
+        console.log("Mensaje: ", result.message);
+        console.log("Url: ", result.source_url);
+        console.log("Pdf: ", result.pdf_url);
+        console.log("Código: ", result.code);
+        console.log("Intento: ", result.attempt);
 
-  const cvPath = path.join(process.cwd(), 'cvoscar.pdf');
-
-  formData.append("github_user", "systaxiecuador");
-  formData.append("github_repo_url", "https://github.com/systaxiecuador/retoNeueSchule");
-  formData.append("authorization_code", authCode);
-  formData.append("cv", fs.createReadStream(cvPath));
-
-  try {
-    const response = await fetch("https://api-challenge.neue.schule/api/challenge/submit", {
-      method: "POST",
-      body: formData,
-    });
-
-    const result = await response.json();
-    
-    if (response.ok) {
-      console.log("¡Éxito!", result.message);
-    } else {
-      console.error("Error:", result.message);
+    } catch (error) {
+        console.error("Hubo un error con la solicitud:", error);
     }
-  } catch (error) {
-    console.error("Hubo un error con la solicitud:", error);
-  }
 }
