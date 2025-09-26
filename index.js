@@ -26,7 +26,7 @@ fetch("https://api-challenge.neue.schule/api/challenge/request-code", {
   const cvPath = path.join(process.cwd(), 'cvoscar.pdf');
 
   formData.append("github_user", "systaxiecuador");
-  formData.append("github_repo_url", "https://github.com/systaxiecuador/systravel");
+  formData.append("github_repo_url", "https://github.com/systaxiecuador/retoNeueSchule");
   formData.append("authorization_code", authCode);
   formData.append("cv", fs.createReadStream(cvPath));
 

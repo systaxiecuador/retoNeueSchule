@@ -10,7 +10,7 @@ function procesarCaso($casosRestantes, $stream) {
         return;
     }
 
-    // Leemos la línea que indica cuántos enteros vienen (X), aunque no la usamos.
+    // Leemos la línea que indica cuántos enteros vienen (X)
     fgets($stream);
 
     // Leemos la línea con los números, la limpiamos y la convertimos en un array.
@@ -33,7 +33,7 @@ function procesarCaso($casosRestantes, $stream) {
     $resultado = array_sum($cubos);
 
     // Imprimimos el resultado del caso actual.
-    echo $resultado . "\n";
+    echo 'Resultado: '.$resultado . "\n";
 
     // Llamada recursiva: procesamos el siguiente caso.
     procesarCaso($casosRestantes - 1, $stream);
